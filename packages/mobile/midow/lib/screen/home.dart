@@ -208,6 +208,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
             bottom: 0,
             // child:
             child: GoogleMap(
+              minMaxZoomPreference: MinMaxZoomPreference(8, 20),
+              zoomGesturesEnabled: true,
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
               mapType: MapType.normal,
