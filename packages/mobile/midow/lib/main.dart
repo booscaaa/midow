@@ -8,18 +8,18 @@ void backgroundFetchHeadlessTask() async {
 }
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-
   static const Color PRIMARY = Color(0xFFA587E8);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
           appBarTheme: AppBarTheme(

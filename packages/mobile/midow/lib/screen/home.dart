@@ -7,6 +7,9 @@ import 'package:background_location/background_location.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:math' as math;
+
+import 'package:midow/model/estabelecimento.dart';
+import 'package:midow/screen/crud-estabelecimento.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,6 +25,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
   MarkerId selectedMarker;
   int _markerIdCounter = 1;
   LatLng markerAdd;
+  bool cadastrar = false;
 
   int _selectedIndex = 1;
 
@@ -216,7 +220,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
               initialCameraPosition: _kGooglePlex,
               markers: Set<Marker>.of(markers.values),
               onCameraIdle: () {
-                print('aqui');
+                this.cadastrar = true;
+                setState(() {});
               },
               onCameraMove: (object) {
                 if (nova) {
@@ -233,6 +238,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         // _onMarkerTapped(markerId);
                       });
                   markers[markerId] = marker;
+                  this.cadastrar = false;
                   setState(() {});
                 }
               },
@@ -355,19 +361,46 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
             )
-          : Container(
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: RaisedButton(
-                color: Theme.of(context).primaryColor,
-                textColor: Colors.white,
-                child: Text('Cancelar'),
-                onPressed: () {
-                  this.nova = !this.nova;
-                  this.markers = <MarkerId, Marker>{};
-                  setState(() {});
-                },
-              ),
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                cadastrar
+                    ? Container(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: RaisedButton(
+                          color: Theme.of(context).primaryColor,
+                          textColor: Colors.white,
+                          child: Text('Incluir nesse local'),
+                          onPressed: () {
+                            this.nova = !this.nova;
+                            this.markers = <MarkerId, Marker>{};
+                            setState(() {});
+
+                            Estabelecimento e = new Estabelecimento(
+                                latitude: markerAdd.latitude,
+                                longitute: markerAdd.longitude);
+                            Navigator.of(context).push(TutorialOverlay());
+                          },
+                        ),
+                      )
+                    : Container(),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: RaisedButton(
+                    color: Colors.red,
+                    textColor: Colors.white,
+                    child: Text('Cancelar'),
+                    onPressed: () {
+                      this.nova = !this.nova;
+                      this.markers = <MarkerId, Marker>{};
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ],
             ),
+      floatingActionButtonAnimator: NoScalingAnimation(),
       floatingActionButtonLocation: this.nova
           ? FloatingActionButtonLocation.centerFloat
           : FloatingActionButtonLocation.endFloat,
@@ -380,5 +413,26 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
         markers.remove(selectedMarker);
       }
     });
+  }
+}
+
+class NoScalingAnimation extends FloatingActionButtonAnimator {
+  double _x;
+  double _y;
+  @override
+  Offset getOffset({Offset begin, Offset end, double progress}) {
+    _x = begin.dx + (end.dx - begin.dx) * progress;
+    _y = begin.dy + (end.dy - begin.dy) * progress;
+    return Offset(_x, _y);
+  }
+
+  @override
+  Animation<double> getRotationAnimation({Animation<double> parent}) {
+    return Tween<double>(begin: 1.0, end: 1.0).animate(parent);
+  }
+
+  @override
+  Animation<double> getScaleAnimation({Animation<double> parent}) {
+    return Tween<double>(begin: 1.0, end: 1.0).animate(parent);
   }
 }
