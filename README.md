@@ -163,6 +163,13 @@ $ npm run serve
 ```
 
 <br>
+
+### URLs to show the aplications
+
+API = http://YOUR_MACHINE_IP:3333
+FRONTEND = http://YOUR_MACHINE_IP:8080
+
+<br>
 <br>
 <br>
 
