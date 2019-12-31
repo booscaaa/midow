@@ -9,6 +9,7 @@ The idea of the App is:
 
 _"An application that enables interaction between the urban community, allowing everyone who uses the solution to share medicine prices."._
 
+<br>
 
 ## Why?
 
@@ -22,19 +23,7 @@ Also, you can use this Project as you wish, be for study, be for make improvemen
 
 It's free!
 
-<!-- ## Some Observations about this App
-
-1 - There's no functionality of Login/Register, the buttons and the forms in the Login Screen are only for UI matters.
-
-2 - The only option that works at _Settings_ screen it's toggle the Dark/Light theme, all the others are just for UI matters too. -->
-
-<!-- ## Installers
-
-If you want to test the App in the Production mode, the installers are listed below:
-
-[Android .apk installer](https://drive.google.com/file/d/1LKgdu1WDPo8eU2NVjoB92TPi4my8QP4D/view?usp=sharing) -->
-
-<!-- iOS .ipa installer: Soon! -->
+<br>
 
 ## Functionalities
 
@@ -46,6 +35,8 @@ If you want to test the App in the Production mode, the installers are listed be
 	- Create, edit and remove the establishments you have registered
 	- Report incorrect information from other users anonymously.
 
+<br>
+
 ## Getting Started
 
 ### Prerequisites
@@ -53,12 +44,21 @@ If you want to test the App in the Production mode, the installers are listed be
 To run this project in the development mode, you'll need to have a basic environment to run: 
 - A Flutter App, that can be found [here](https://flutter.dev/docs/get-started/install).
 
-- A Adonis App, that can be found [here](https://adonisjs.com/docs/4.1/installation).
+- A Docker App, that con be found [here](https://docs.docker.com/install/)
+
+_or_
+
+- A Adonis CLI App, that can be found [here](https://adonisjs.com/docs/4.1/installation).
+
+- A Vue CLI App, that can be found [here](https://cli.vuejs.org/guide/installation.html).
 
 - A Postgres Database, that can be found [here](https://www.postgresql.org/download/).
 
 
+<br>
+
 ### Installing
+
 
 **Cloning the Repository**
 
@@ -67,6 +67,38 @@ $ git clone https://github.com/boscaa/midow
 
 $ cd midow
 ```
+
+# Installing with Docker !!!!!!!
+
+
+**Installing dependencies**
+
+- Navigate to packages - docker
+- Run a docker command
+
+```
+$ cd packages/docker
+$ docker-compose up -d
+```
+
+### Running
+
+The docker compose already installed all the dependencies, just run a flutter app into your emulator.
+
+Android and iOS
+
+```
+$ cd packages/mobile/midow
+$ flutter pub get
+$ flutter run
+```
+
+<br>
+<br>
+<br>
+
+#### Installing without Docker !?   :(
+
 
 **Installing dependencies**
 
@@ -87,39 +119,65 @@ _and_
 ```
 $ cd ../../../
 $ cd packages/apis/default-midow-api
-$ npm i 
+$ npm i
 ```
 
-### Connecting the App with the Server
+_and_
 
-<!-- 1 - Follow the instructions on the [mindcast-server](https://github.com/steniowagner/mindcast-server) to have the server up and running on your machine.
+- Go back to project root folder
+- Navigate to packages - web - midow
+- Run a node command
 
-2 - With the server up and running, go to the [/.env.development](https://github.com/steniowagner/mindCast/blob/master/.env.development) file and edit the SERVER_URL value for the IP of your machine (you can have some issues with _localhost_ if you're running on an android physical device, but you can use localhost safely on iOS).
+```
+$ cd ../../../
+$ cd packages/web/midow
+$ npm i
+```
 
-It should looks like this:
+<br>
 
-SERVER_URL=http://**_IP_OF_YOUR_MACHINE_**:3001/mind-cast/api/v1 -->
-<!-- 
-*or*
-
-SERVER_URL=http://localhost:3001/mind-cast/api/v1 -->
-
-### Running
+### Running (if you not using docker :()
 
 With all dependencies installed and the environment properly configured, you can now run the app:
 
 Android and iOS
 
 ```
+$ cd packages/mobile/midow
 $ flutter run
 ```
 
-## Built With
+
+Adonis API
+
+```
+$ cd packages/apis/default-midow-api
+$ adonis serve --dev
+```
+
+Vue Frontend
+
+```
+$ cd packages/web/midow
+$ npm run serve
+```
+
+<br>
+<br>
+<br>
+
+## Mobile application built With
 
 - [Flutter](https://flutter.dev/) - Build the native app using Dart language
 - [Google-Maps](https://pub.dev/packages/google_maps_flutter) - Maps SDK for flutter
-- [Background-Location](https://pub.dev/packages/background_location) - Used to get location of user
+- [Location](https://pub.dev/packages/location) - Used to get location of user
 - [Background-Fetch](https://pub.dev/packages/background_fetch) - Used to get location of user when application is closed
+
+## Web application built With
+
+- [Vue](https://vuejs.org/) - Build the web app using JS language
+- [Vuetify](https://vuetifyjs.com/) - Material Design library for Vuejs
+- [Google-Maps](https://developers.google.com/maps/documentation/javascript/tutorial) - Maps SDK for JS
 
 ## Support tools
 
