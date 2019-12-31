@@ -1,0 +1,69 @@
+version: '3.4'
+
+services:
+  # postgres-database:
+  #   restart: always
+  #   image: postgres:11.5
+  #   volumes:
+  #     - database-volume:/var/lib/postgresql/data
+
+  #   ports:
+  #     - "5432:5432"
+
+  #   environment:
+  #     - POSTGRES_USER=$POSTGRESUSER
+  #     - POSTGRES_PASSWORD=$POSTGRESPASS
+  #     - POSTGRES_DB=$POSTGRESDB
+  #     - TZ=$POSTGRESTZ
+
+  #   networks:
+  #     - midownet
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMINEMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMINPASS}
+  #   volumes:
+  #     - pgadmin-volume:/root/.pgadmin
+  #   ports:
+  #     - "5050:80"
+  #   restart: unless-stopped
+  #   networks:
+  #     - midownet
+
+  default-api:
+    restart: always
+    build: ../apis/default-midow-api
+    volumes: 
+      - ../apis/default-midow-api:/app
+    ports:
+      - "3333:3333"
+    # links:
+    #   - postgres-database
+
+    networks:
+      - midownet
+
+
+  web-midow:
+    restart: always
+    build: ../web/midow
+    volumes: 
+      - ../web/midow:/midow
+    ports:
+      - "8080:8080"
+    # links:
+    #   - postgres-database
+
+    networks:
+      - midownet
+
+
+networks:
+  midownet:
+
+# volumes:
+#   database-volume:
+#     driver: local
+#   pgadmin-volume:

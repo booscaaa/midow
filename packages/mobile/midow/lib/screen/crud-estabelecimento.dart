@@ -25,7 +25,6 @@ class TutorialOverlay extends ModalRoute<void> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    // This makes sure that text and other content follows the material style
     return Material(
         type: MaterialType.transparency,
         // make sure that the overlay content is not cut off

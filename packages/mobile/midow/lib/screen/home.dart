@@ -187,10 +187,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return new Scaffold(
       key: _drawerKey,
       drawer: Drawer(
-          // Add a ListView to the drawer. This ensures the user can scroll
-          // through the options in the drawer if there isn't enough vertical
-          // space to fit everything.
-
           child: Container(
         color: Colors.white,
         child: ListView.builder(
@@ -304,7 +300,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: AppBar(
                 centerTitle: false,
                 leading: Transform.scale(
-                    scale: 1.0,
+                    scale: 0.8,
                     child: FloatingActionButton(
                       elevation: 1,
                       backgroundColor: Theme.of(context).primaryColor,
