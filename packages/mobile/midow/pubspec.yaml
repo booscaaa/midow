@@ -27,6 +27,10 @@ dependencies:
   location: ^2.3.5
   background_fetch: '^0.4.0'
   permission_handler: ^4.0.0
+  dio: ^3.0.8
+  bloc_pattern: ^2.5.1
+  rxdart: ^0.23.1
+  bloc: ^3.0.0
 
 dev_dependencies:
   flutter_test:

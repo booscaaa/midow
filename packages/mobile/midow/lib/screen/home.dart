@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:background_fetch/background_fetch.dart';
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:midow/bloc/estabelecimento.dart';
 import 'dart:math' as math;
 
 import 'package:midow/model/estabelecimento.dart';
@@ -16,13 +18,13 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  final bloc = BlocProvider.getBloc<EstabelecimentoBloc>();
   Completer<GoogleMapController> _controller = Completer();
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   AnimationController _controllerAnimation;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   bool firstTime = true;
   MarkerId selectedMarker;
-  int _markerIdCounter = 1;
   LatLng markerAdd;
   bool cadastrar = false;
   LocationData currentLocation;
@@ -62,35 +64,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-
-    // BackgroundLocation.getPermissions(
-    //   onGranted: () {
-    //     print('asdasdas');
-    //     BackgroundLocation.startLocationService();
-    //   },
-    //   onDenied: () async {
-    //     Map<PermissionGroup, PermissionStatus> permissions =
-    //         await PermissionHandler()
-    //             .requestPermissions([PermissionGroup.location]);
-    //     print(permissions);
-    //   },
-    // );
-
-    // BackgroundLocation.getLocationUpdates((location) async {
-    //   currentLocation = location;
-
-    //   print(location.latitude);
-
-    //   if (firstTime) {
-    //     final GoogleMapController controller = await _controller.future;
-    //     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-    //       target: LatLng(location.latitude, location.longitude),
-    //       zoom: 15.4746,
-    //     )));
-
-    //     // firstTime = !firstTime;
-    //   }
-    // });
   }
 
   _getLocation() async {
@@ -137,13 +110,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
             requiresDeviceIdle: false,
             requiredNetworkType: BackgroundFetchConfig.NETWORK_TYPE_NONE),
         () async {
-      // This is the fetch-event callback.
       print('[BackgroundFetch] Event received');
       setState(() {
         _events.insert(0, new DateTime.now());
       });
-      // IMPORTANT:  You must signal completion of your fetch task or the OS can punish your app
-      // for taking too long in the background.
+
       BackgroundFetch.finish();
     }).then((int status) {
       print('[BackgroundFetch] configure success: $status');
@@ -241,56 +212,50 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
       )),
       body: Stack(
         children: <Widget>[
+          Consumer<EstabelecimentoBloc>(
+              builder: (BuildContext context, EstabelecimentoBloc bloc) {
+                print('adasdas');
+            this.markers = <MarkerId, Marker>{};
+            for (Estabelecimento e in bloc.estabelecimentos) {
+              final String markerIdVal = e.id.toString();
+              final MarkerId markerId = MarkerId(markerIdVal);
+
+              final Marker marker = Marker(
+                  markerId: markerId,
+                  position: LatLng(e.latitude, e.longitude));
+              markers[markerId] = marker;
+            }
+
+            return Container();
+          }),
           Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            // child:
-            child: GoogleMap(
-              minMaxZoomPreference: MinMaxZoomPreference(13, 18),
-              zoomGesturesEnabled: true,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              mapType: MapType.normal,
-              initialCameraPosition: _kGooglePlex,
-              markers: Set<Marker>.of(markers.values),
-              onCameraMoveStarted: () {
-                this.cadastrar = true;
-                setState(() {});
-              },
-              onCameraMove: (object) {
-                print('1');
-                if (nova) {
-                  markerAdd = object.target;
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              // child:
+              child: GoogleMap(
+                minMaxZoomPreference: MinMaxZoomPreference(13, 18),
+                zoomGesturesEnabled: true,
+                myLocationEnabled: true,
+                myLocationButtonEnabled: false,
+                mapType: MapType.normal,
+                initialCameraPosition: _kGooglePlex,
+                markers: Set<Marker>.of(markers.values),
+                onCameraMoveStarted: () {
+                  this.cadastrar = true;
                   setState(() {});
-                }
-                // final String markerIdVal = 'marker_id_$_markerIdCounter';
-                // final MarkerId markerId = MarkerId(markerIdVal);
-
-                // final Marker marker = Marker(
-                //     markerId: markerId,
-                //     draggable: true,
-                //     onDragEnd: (position) {
-                //       print(position);
-                //     },
-                //     position: LatLng(markerAdd.latitude, markerAdd.longitude),
-                //     infoWindow: InfoWindow(title: markerIdVal, snippet: '*'),
-                //     onTap: () {
-                //       // _onMarkerTapped(markerId);
-                //     });
-                // markers[markerId] = marker;
-                //   this.cadastrar = false;
-                //   setState(() {});
-                // }
-
-                // _updatePosition(object);
-              },
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-            ),
-          ),
+                },
+                onCameraMove: (object) {
+                  if (nova) {
+                    markerAdd = object.target;
+                    setState(() {});
+                  }
+                },
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                },
+              )),
           Positioned(
             top: 0,
             left: 0,
@@ -371,29 +336,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             this.cadastrar = false;
                             _controllerAnimation.reverse();
                             setState(() {});
-                            // final String markerIdVal =
-                            //     'marker_id_$_markerIdCounter';
-                            // final MarkerId markerId = MarkerId(markerIdVal);
-
-                            // final Marker marker = Marker(
-                            //     markerId: markerId,
-                            //     draggable: true,
-                            //     position: LatLng(
-                            //         markerAdd.latitude, markerAdd.longitude),
-                            //     infoWindow: InfoWindow(
-                            //         title: markerIdVal, snippet: '*'),
-                            //     onDragEnd: (position) {
-                            //       print(position);
-                            //     },
-                            //     onTap: () {
-                            //       // _onMarkerTapped(markerId);
-                            //     });
-
-                            // setState(() {
-                            //   markers[markerId] = marker;
-                            // });
-
                             break;
+
                           default:
                         }
                       },
@@ -450,8 +394,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                               Estabelecimento e = new Estabelecimento(
                                   latitude: markerAdd.latitude,
-                                  longitute: markerAdd.longitude);
-                              Navigator.of(context).push(TutorialOverlay());
+                                  longitude: markerAdd.longitude);
+                              Navigator.of(context)
+                                  .push(EstabelecimentoCrudPage(estabelecimento: e));
                             },
                           ),
                         )
