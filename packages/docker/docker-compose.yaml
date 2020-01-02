@@ -34,12 +34,12 @@ services:
 
   default-api:
     restart: always
-    build: ../apis/default-midow-api
+    build: ../api/default-midow-api
     # command: adonis migration:run
     depends_on:
       - postgres-database
     volumes: 
-      - ../apis/default-midow-api:/app
+      - ../api/default-midow-api:/app
     ports:
       - "3333:3333"
     links:

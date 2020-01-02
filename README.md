@@ -113,12 +113,12 @@ $ flutter pub get
 _and_
 
 - Go back to project root folder
-- Navigate to packages - apis - default-midow-api
+- Navigate to packages - api - default-midow-api
 - Run a node command
 
 ```
 $ cd ../../../
-$ cd packages/apis/default-midow-api
+$ cd packages/api/default-midow-api
 $ npm i
 ```
 
@@ -151,7 +151,7 @@ $ flutter run
 Adonis API
 
 ```
-$ cd packages/apis/default-midow-api
+$ cd packages/api/default-midow-api
 $ adonis serve --dev
 ```
 
