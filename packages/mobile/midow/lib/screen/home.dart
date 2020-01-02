@@ -1,15 +1,20 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_util/google_maps_util.dart';
 import 'package:location/location.dart';
+import 'package:midow/api/directions.dart';
+import 'package:midow/api/estabelecimento.dart';
 import 'package:midow/bloc/estabelecimento.dart';
 import 'dart:math' as math;
 
 import 'package:midow/model/estabelecimento.dart';
 import 'package:midow/screen/crud-estabelecimento.dart';
+import 'package:midow/screen/detalhes-estabelecimento.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,6 +24,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final bloc = BlocProvider.getBloc<EstabelecimentoBloc>();
+
   Completer<GoogleMapController> _controller = Completer();
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   AnimationController _controllerAnimation;
@@ -28,6 +34,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
   LatLng markerAdd;
   bool cadastrar = false;
   LocationData currentLocation;
+  EstabelecimentoAPI api = EstabelecimentoAPI();
 
   var location = new Location();
 
@@ -59,11 +66,20 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
     initPlatformState();
     _getLocation();
     _listenLocation();
+    bloc.index();
+
+    bloc.estabelecimentos.stream.listen(_plotMaps);
 
     _controllerAnimation = new AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+  }
+
+  _plotMaps(List<Estabelecimento> estabelecimentos) {
+    for (Estabelecimento e in estabelecimentos) {
+      _add(e);
+    }
   }
 
   _getLocation() async {
@@ -72,7 +88,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(currentLocation.latitude, currentLocation.longitude),
-        zoom: 15.4746,
+        zoom: 18.4746,
       )));
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
@@ -152,6 +168,49 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
+  _add(Estabelecimento e) async {
+    final bitmapIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'images/marker_point.png');
+    final String markerIdVal = e.id.toString();
+    final MarkerId markerId = MarkerId(markerIdVal);
+
+    if (markers.containsKey(markerId)) {
+      markers.remove(markerId);
+    }
+
+    final Marker marker = Marker(
+        markerId: markerId,
+        position: LatLng(e.latitude, e.longitude),
+        icon: bitmapIcon,
+        onTap: () async {
+          DirectionsAPI api = new DirectionsAPI();
+          print('asdasdasdasd');
+          print(await api.getRoute(currentLocation, e));
+
+          Set<Polyline> _polyline = {};
+          List<LatLng> latLong = new PolyUtil().decode(await api.getRoute(currentLocation, e));
+
+          _polyline.add(Polyline(
+            polylineId: PolylineId(e.id.toString()),
+            visible: true,
+            
+            //latlng is List<LatLng>
+            points: latLong,
+                
+            color: Theme.of(context).primaryColor,
+          ));
+
+          Navigator.of(context).push(EstabelecimentoDetalhesPage(
+              estabelecimento: e,
+              currentLocation: currentLocation,
+              polilyne: _polyline,
+              points: latLong));
+        });
+    setState(() {
+      markers[markerId] = marker;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Color backgroundColor = Theme.of(context).cardColor;
@@ -212,22 +271,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
       )),
       body: Stack(
         children: <Widget>[
-          Consumer<EstabelecimentoBloc>(
-              builder: (BuildContext context, EstabelecimentoBloc bloc) {
-                print('adasdas');
-            this.markers = <MarkerId, Marker>{};
-            for (Estabelecimento e in bloc.estabelecimentos) {
-              final String markerIdVal = e.id.toString();
-              final MarkerId markerId = MarkerId(markerIdVal);
+          // Consumer<EstabelecimentoBloc>(
+          //     builder: (BuildContext context, EstabelecimentoBloc bloc) {
+          //   this.markers = <MarkerId, Marker>{};
+          //   for (Estabelecimento e in bloc.estabelecimentos) {
+          //     _add(e);
+          //   }
 
-              final Marker marker = Marker(
-                  markerId: markerId,
-                  position: LatLng(e.latitude, e.longitude));
-              markers[markerId] = marker;
-            }
-
-            return Container();
-          }),
+          //   return Container();
+          // }),
           Positioned(
               top: 0,
               left: 0,
@@ -395,8 +447,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               Estabelecimento e = new Estabelecimento(
                                   latitude: markerAdd.latitude,
                                   longitude: markerAdd.longitude);
-                              Navigator.of(context)
-                                  .push(EstabelecimentoCrudPage(estabelecimento: e));
+                              Navigator.of(context).push(
+                                  EstabelecimentoCrudPage(estabelecimento: e));
+                              // Add Your Code here.
                             },
                           ),
                         )

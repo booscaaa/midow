@@ -27,6 +27,8 @@ class EstabelecimentoCrudPage extends ModalRoute<void> {
 
   final bloc = BlocProvider.getBloc<EstabelecimentoBloc>();
 
+  final nomeController = TextEditingController();
+
   @override
   Widget buildPage(
     BuildContext context,
@@ -82,6 +84,7 @@ class EstabelecimentoCrudPage extends ModalRoute<void> {
                                             child: Column(
                                               children: <Widget>[
                                                 TextField(
+                                                    controller: nomeController,
                                                     decoration: new InputDecoration(
                                                         hasFloatingPlaceholder:
                                                             true,
@@ -109,7 +112,10 @@ class EstabelecimentoCrudPage extends ModalRoute<void> {
                                                     textColor: Theme.of(context)
                                                         .primaryColor,
                                                     onPressed: () {
-                                                      bloc.changeTeste(estabelecimento);
+                                                      estabelecimento.nome =
+                                                          nomeController.text;
+                                                      bloc.store(
+                                                          estabelecimento);
                                                     },
                                                     child: Text('Salvar'),
                                                   )))

@@ -35,7 +35,7 @@ services:
   default-api:
     restart: always
     build: ../apis/default-midow-api
-    command: adonis migration:run
+    # command: adonis migration:run
     depends_on:
       - postgres-database
     volumes: 
@@ -55,7 +55,7 @@ services:
     volumes: 
       - ../web/midow:/midow
     ports:
-      - "8080:8080"
+      - "8084:8080"
 
     networks:
       - midownet

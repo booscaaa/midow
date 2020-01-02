@@ -24,7 +24,10 @@ class EstabelecimentoController {
     request,
     response,
     view
-  }) {}
+  }) {
+	const estabelecimentos = await Estabelecimento.all();
+    return estabelecimentos;
+  }
 
   /**
    * Render a form to be used for creating a new estabelecimento.
