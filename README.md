@@ -179,6 +179,12 @@ $ npm run serve
 - [Google-Maps](https://pub.dev/packages/google_maps_flutter) - Maps SDK for flutter
 - [Location](https://pub.dev/packages/location) - Used to get location of user
 - [Background-Fetch](https://pub.dev/packages/background_fetch) - Used to get location of user when application is closed
+- [Permission_Handler](https://pub.dev/packages/permission_handler) - Used to get permissions of device services
+- [Dio](https://pub.dev/packages/dio) - Http cliente to make requests
+- [Bloc_Pattern](https://pub.dev/packages/bloc_pattern) - BR library to state management - Thanks [Flutterando](https://flutterando.com.br)
+- [Bloc](https://pub.dev/packages/bloc) - State management library
+- [Google-Maps-Util](https://pub.dev/packages/google_maps_util) - Directions and routes from google maps API
+
 
 ## Web application built With
 

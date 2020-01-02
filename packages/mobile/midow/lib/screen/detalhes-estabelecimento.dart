@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_util/google_maps_util.dart';
 import 'package:location/location.dart';
-import 'package:midow/api/directions.dart';
 import 'package:midow/bloc/estabelecimento.dart';
 import 'package:midow/model/estabelecimento.dart';
 import 'dart:math';
@@ -127,28 +125,35 @@ class EstabelecimentoDetalhesPage extends ModalRoute<void> {
                                                             controller) async {
                                                       _controller
                                                           .complete(controller);
-// await Future.delayed(Duration(milliseconds: 1000));
+                                                      await Future.delayed(
+                                                          Duration(
+                                                              milliseconds:
+                                                                  500));
                                                       if (estabelecimento
                                                               .latitude <=
                                                           currentLocation
                                                               .latitude) {
-                                                        controller.moveCamera(CameraUpdate.newLatLngBounds(
-                                                            LatLngBounds(
-                                                                southwest: LatLng(
-                                                                    estabelecimento
-                                                                        .latitude,
-                                                                    estabelecimento
-                                                                        .longitude),
-                                                                northeast: LatLng(
-                                                                    currentLocation
-                                                                        .latitude,
-                                                                    currentLocation
-                                                                        .longitude)),
-                                                            20.0), );
+                                                        controller.moveCamera(
+                                                          CameraUpdate.newLatLngBounds(
+                                                              LatLngBounds(
+                                                                  southwest: LatLng(
+                                                                      estabelecimento
+                                                                          .latitude,
+                                                                      estabelecimento
+                                                                          .longitude),
+                                                                  northeast: LatLng(
+                                                                      currentLocation
+                                                                          .latitude,
+                                                                      currentLocation
+                                                                          .longitude)),
+                                                              20.0),
+                                                        );
                                                       } else {
-                                                        controller.moveCamera(CameraUpdate.newLatLngBounds(
-                                                            getBounds(),
-                                                            20.0));
+                                                        controller.moveCamera(
+                                                            CameraUpdate
+                                                                .newLatLngBounds(
+                                                                    getBounds(),
+                                                                    20.0));
                                                       }
                                                     },
                                                   )))),
@@ -178,7 +183,7 @@ class EstabelecimentoDetalhesPage extends ModalRoute<void> {
     );
 
     return bounds;
-}
+  }
 
   _add(Estabelecimento e) async {
     final bitmapIcon = await BitmapDescriptor.fromAssetImage(
