@@ -4,11 +4,14 @@ import 'package:midow/model/estabelecimento.dart';
 class EstabelecimentoAPI {
   Future<Estabelecimento> store(Estabelecimento e) async {
     Dio dio = new Dio();
+    print(e.toJson());
     Response response = await dio.post(
         "http://192.168.200.65:3333/estabelecimento",
         data: e.toJson(),
         options:
             Options(headers: {Headers.contentTypeHeader: "application/json"}));
+
+            print(response.data);
 
     return Estabelecimento.fromJson(response.data);
   }

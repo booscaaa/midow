@@ -1,9 +1,10 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:midow/api/estabelecimento.dart';
 import 'package:midow/model/estabelecimento.dart';
+import 'package:midow/provider/favorito.dart';
 import 'package:rxdart/rxdart.dart';
 
-class EstabelecimentoBloc extends BlocBase {
+class FavoritoBloc extends BlocBase {
   List<Estabelecimento> _estabelecimentos = new List();
   EstabelecimentoAPI api = new EstabelecimentoAPI();
 
@@ -13,33 +14,25 @@ class EstabelecimentoBloc extends BlocBase {
   bool loading = false;
   bool isClose = false;
 
-  changeLoading(bool isLoading) {
-    this.loading = isLoading;
-
-    if (!isLoading) {
-      this.isClose = true;
-    }
-    notifyListeners();
+  FavoritoBloc() {
+    _getFavoritos();
   }
 
-  index() async {
-    List<Estabelecimento> est = await api.index();
-    this._estabelecimentos = est;
+  _getFavoritos() async {
+    FavoritoProvider fp = new FavoritoProvider();
+    await fp.open();
+    _estabelecimentos = await fp.getEstabelecimentos();
     estabelecimentos.sink.add(_estabelecimentos);
-    // notifyListeners();
+    fp.close();
   }
 
-  store(Estabelecimento e) async {
-    changeLoading(true);
-
-    try {
-      Estabelecimento estabelecimento = await api.store(e);
-      _estabelecimentos.add(estabelecimento);
-
-      estabelecimentos.sink.add(_estabelecimentos);
-    } catch (e) {}
-
-    changeLoading(false);
+  add(Estabelecimento e) async {
+    FavoritoProvider fp = new FavoritoProvider();
+    await fp.open();
+    await fp.insert(e);
+    _estabelecimentos.add(e);
+    estabelecimentos.sink.add(_estabelecimentos);
+    fp.close();
   }
 
   @override

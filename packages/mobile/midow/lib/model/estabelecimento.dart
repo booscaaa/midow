@@ -34,5 +34,6 @@ class Estabelecimento {
         "latitude": this.latitude,
         "longitude": this.longitude,
         "nome": this.nome,
+        "id": this.id != null ? this.id : 0
       };
 }

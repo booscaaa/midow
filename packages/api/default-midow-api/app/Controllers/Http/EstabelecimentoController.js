@@ -56,7 +56,7 @@ class EstabelecimentoController {
     request,
     response
   }) {
-    const data = request.all();
+    const data = request.only(['nome', 'latitude', 'longitude']);
 
     const estabelecimento = await Estabelecimento.create(data);
 

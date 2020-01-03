@@ -6,24 +6,30 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/directions.dart' as ws;
 import 'package:location/location.dart';
 import 'package:midow/bloc/estabelecimento.dart';
+import 'package:midow/bloc/favorito.dart';
 import 'package:midow/model/estabelecimento.dart';
 import 'dart:math';
 
 class EstabelecimentoDetalhesPage extends ModalRoute<void> {
+  Completer<GoogleMapController> _controller = Completer();
+  final bloc = BlocProvider.getBloc<EstabelecimentoBloc>();
+  final favoritos = BlocProvider.getBloc<FavoritoBloc>();
   final ws.DirectionsResponse direction;
   final Estabelecimento estabelecimento;
   final Map<MarkerId, Marker> marker;
   final LocationData currentLocation;
   final Set<Polyline> polilyne;
   final List<LatLng> points;
+  final String mapStyle;
 
   EstabelecimentoDetalhesPage(
-      {this.estabelecimento,
-      this.currentLocation,
-      this.polilyne,
-      this.points,
-      this.marker,
-      this.direction});
+      {@required this.estabelecimento,
+      @required this.currentLocation,
+      @required this.direction,
+      @required this.polilyne,
+      @required this.mapStyle,
+      @required this.points,
+      @required this.marker});
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 500);
@@ -42,10 +48,6 @@ class EstabelecimentoDetalhesPage extends ModalRoute<void> {
 
   @override
   bool get maintainState => true;
-
-  final bloc = BlocProvider.getBloc<EstabelecimentoBloc>();
-
-  Completer<GoogleMapController> _controller = Completer();
 
   @override
   Widget buildPage(
@@ -80,74 +82,32 @@ class EstabelecimentoDetalhesPage extends ModalRoute<void> {
                         child: Container(
                             margin: EdgeInsets.only(top: 30),
                             child: Scaffold(
-                              backgroundColor: Colors.transparent,
-                              appBar: AppBar(
                                 backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                title: Text(estabelecimento.nome),
-                                iconTheme: IconThemeData(
-                                    color: Theme.of(context).primaryColor),
-                              ),
-                              body: Consumer<EstabelecimentoBloc>(builder:
-                                  (BuildContext context,
-                                      EstabelecimentoBloc bloc) {
-                                if (bloc.loading) {
-                                  return Center(
-                                      child: CircularProgressIndicator());
-                                } else {
-                                  return Container(
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        children: <Widget>[
-                                          SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.5,
-                                              child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                      Radius.circular(20.0),
-                                                    ),
-                                                  ),
-                                                  elevation: 8,
-                                                  child: GoogleMap(
-                                                    zoomGesturesEnabled: true,
-                                                    myLocationEnabled: true,
-                                                    myLocationButtonEnabled:
-                                                        true,
-                                                    mapType: MapType.normal,
-                                                    initialCameraPosition:
-                                                        _kGooglePlex,
-                                                    polylines: polilyne,
-                                                    markers: Set.from(marker.values),
-                                                    onMapCreated:
-                                                        (GoogleMapController
-                                                            controller) async {
-                                                      _controller
-                                                          .complete(controller);
-                                                      if (estabelecimento
-                                                              .latitude <=
-                                                          currentLocation
-                                                              .latitude) {
-                                                        await Future.delayed(
-                                                            new Duration(
-                                                                milliseconds:
-                                                                    400));
-                                                        controller.moveCamera(
-                                                            CameraUpdate
-                                                                .newLatLngBounds(
-                                                                    getBounds(),
-                                                                    20.0));
-                                                      }
-                                                    },
-                                                  ))),
-                                          Container(
-                                              padding: EdgeInsets.only(top: 20),
-                                              width: double.infinity,
-                                              child: Card(
+                                appBar: AppBar(
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  title: Text(estabelecimento.nome),
+                                  iconTheme: IconThemeData(
+                                      color: Theme.of(context).primaryColor),
+                                  actions: <Widget>[
+                                    IconButton(
+                                      icon: Icon(Icons.star_border),
+                                      onPressed: () {
+                                        favoritos.add(estabelecimento);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                body: Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: Column(
+                                      children: <Widget>[
+                                        SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.5,
+                                            child: Card(
                                                 clipBehavior: Clip.antiAlias,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
@@ -156,58 +116,100 @@ class EstabelecimentoDetalhesPage extends ModalRoute<void> {
                                                   ),
                                                 ),
                                                 elevation: 8,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Container(
-                                                        padding:
-                                                            EdgeInsets.all(10),
-                                                        color: Colors.white,
-                                                        child: Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: <Widget>[
-                                                            Text('Distancia'),
-                                                            Text(direction
-                                                                .routes[0]
-                                                                .legs[0]
-                                                                .distance
-                                                                .text)
-                                                          ],
-                                                        )),
-                                                    Container(
-                                                        padding:
-                                                            EdgeInsets.all(10),
-                                                        color: Colors.grey[100],
-                                                        child: Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: <Widget>[
-                                                            Text('Tempo'),
-                                                            Text(direction
-                                                                .routes[0]
-                                                                .legs[0]
-                                                                .duration
-                                                                .text)
-                                                          ],
-                                                        ))
-                                                  ],
+                                                child: GoogleMap(
+                                                  zoomGesturesEnabled: true,
+                                                  myLocationEnabled: true,
+                                                  myLocationButtonEnabled: false,
+                                                  mapType: MapType.normal,
+                                                  initialCameraPosition:
+                                                      _kGooglePlex,
+                                                  polylines: polilyne,
+                                                  markers:
+                                                      Set.from(marker.values),
+                                                  onMapCreated:
+                                                      (GoogleMapController
+                                                          controller) async {
+                                                    _controller
+                                                        .complete(controller);
+                                                    controller
+                                                        .setMapStyle(mapStyle);
+                                                    if (estabelecimento
+                                                            .latitude <=
+                                                        currentLocation
+                                                            .latitude) {
+                                                      await Future.delayed(
+                                                          new Duration(
+                                                              milliseconds:
+                                                                  400));
+                                                      controller.moveCamera(
+                                                          CameraUpdate
+                                                              .newLatLngBounds(
+                                                                  getBounds(),
+                                                                  70.0));
+                                                    }
+                                                  },
+                                                ))),
+                                        Container(
+                                            padding: EdgeInsets.only(top: 20),
+                                            width: double.infinity,
+                                            child: Card(
+                                              clipBehavior: Clip.antiAlias,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                  Radius.circular(20.0),
                                                 ),
-                                              ))
-                                        ],
-                                      ));
-                                }
-                              }),
-                            ))),
+                                              ),
+                                              elevation: 8,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Container(
+                                                      padding:
+                                                          EdgeInsets.all(10),
+                                                      color: Colors.white,
+                                                      child: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: <Widget>[
+                                                          Text('Distância'),
+                                                          Text(direction
+                                                              .routes[0]
+                                                              .legs[0]
+                                                              .distance
+                                                              .text)
+                                                        ],
+                                                      )),
+                                                  Container(
+                                                      padding:
+                                                          EdgeInsets.all(10),
+                                                      color: Colors.grey[100],
+                                                      child: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: <Widget>[
+                                                          Text('Tempo'),
+                                                          Text(direction
+                                                              .routes[0]
+                                                              .legs[0]
+                                                              .duration
+                                                              .text)
+                                                        ],
+                                                      ))
+                                                ],
+                                              ),
+                                            ))
+                                      ],
+                                    ))))),
                   ),
                 )
               ],
