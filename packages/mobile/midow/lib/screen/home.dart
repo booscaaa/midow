@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_util/google_maps_util.dart';
+import 'package:google_maps_webservice/directions.dart' as ws;
 import 'package:location/location.dart';
 import 'package:midow/api/directions.dart';
 import 'package:midow/api/estabelecimento.dart';
@@ -36,7 +37,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
   LocationData currentLocation;
   EstabelecimentoAPI api = EstabelecimentoAPI();
 
-  var location = new Location();
+  Location location = new Location();
 
   int _selectedIndex = 1;
 
@@ -107,8 +108,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  bool _enabled = true;
-  int _status = 0;
   bool nova = false;
   List<DateTime> _events = [];
   List<IconData> icons = [Icons.info, Icons.add];
@@ -134,27 +133,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
       BackgroundFetch.finish();
     }).then((int status) {
       print('[BackgroundFetch] configure success: $status');
-      setState(() {
-        _status = status;
-      });
     }).catchError((e) {
       print('[BackgroundFetch] configure ERROR: $e');
-      setState(() {
-        _status = e;
-      });
     });
 
-    int status = await BackgroundFetch.status;
-    setState(() {
-      _status = status;
-    });
+    _onStartEnable(true);
+
     if (!mounted) return;
   }
 
-  void _onClickEnable(enabled) {
-    setState(() {
-      _enabled = enabled;
-    });
+  void _onStartEnable(enabled) {
     if (enabled) {
       BackgroundFetch.start().then((int status) {
         print('[BackgroundFetch] start success: $status');
@@ -184,28 +172,41 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
         icon: bitmapIcon,
         onTap: () async {
           DirectionsAPI api = new DirectionsAPI();
-          print('asdasdasdasd');
-          print(await api.getRoute(currentLocation, e));
+          ws.DirectionsResponse direction =
+              await api.getRoute(currentLocation, e);
 
           Set<Polyline> _polyline = {};
-          List<LatLng> latLong = new PolyUtil().decode(await api.getRoute(currentLocation, e));
+          Map<MarkerId, Marker> _marker = <MarkerId, Marker>{};
+          List<LatLng> _latLong = new PolyUtil()
+              .decode(direction.routes[0].overviewPolyline.points);
 
           _polyline.add(Polyline(
             polylineId: PolylineId(e.id.toString()),
+            width: 4,
             visible: true,
-            
-            //latlng is List<LatLng>
-            points: latLong,
-                
+            points: _latLong,
             color: Theme.of(context).primaryColor,
           ));
 
+          final String markerIdVal = e.id.toString();
+          final MarkerId markerId = MarkerId(markerIdVal);
+
+          final Marker marker = Marker(
+              markerId: markerId,
+              position: LatLng(e.latitude, e.longitude),
+              icon: bitmapIcon);
+
+          _marker[markerId] = marker;
+
           Navigator.of(context).push(EstabelecimentoDetalhesPage(
-              estabelecimento: e,
               currentLocation: currentLocation,
+              direction: direction,
               polilyne: _polyline,
-              points: latLong));
+              marker: _marker,
+              estabelecimento: e,
+              points: _latLong));
         });
+
     setState(() {
       markers[markerId] = marker;
     });
@@ -223,30 +224,25 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
             itemCount: menu.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
-                return GestureDetector(
-                    onDoubleTap: () {
-                      _onClickEnable(true);
-                    },
-                    child: SizedBox(
-                        height: 160,
-                        child: DrawerHeader(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              FloatingActionButton(
-                                  disabledElevation: 0,
-                                  onPressed: null,
-                                  child: Icon(Icons.person),
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor),
-                              Text('Não cadastrado'),
-                              Text('Clique para cadastrar-se')
-                            ],
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                          ),
-                        )));
+                return SizedBox(
+                    height: 160,
+                    child: DrawerHeader(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          FloatingActionButton(
+                              disabledElevation: 0,
+                              onPressed: null,
+                              child: Icon(Icons.person),
+                              backgroundColor: Theme.of(context).primaryColor),
+                          Text('Não cadastrado'),
+                          Text('Clique para cadastrar-se')
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                    ));
               } else {
                 return Container(
                     padding: EdgeInsets.all(10.0),
