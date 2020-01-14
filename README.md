@@ -19,9 +19,6 @@ Email-me: boscardinvinicius@gmail.com
 
 Connect with me at [LinkedIn](https://www.linkedin.com/in/booscaaa/).
 
-Also, you can use this Project as you wish, be for study, be for make improvements or earn money with it!
-
-It's free!
 
 <br>
 
