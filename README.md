@@ -1,6 +1,6 @@
 # Midow
 
-<img src="https://user-images.githubusercontent.com/25849775/71724544-63161480-2e0f-11ea-89ad-cc30d4e2ba8c.gif" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="200" height="400" />
+<img src="https://github.com/boscaa/midow/blob/screenshots/screenshots/midow.png"  width="100%" />
 
 
 ## About this Project
