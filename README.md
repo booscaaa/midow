@@ -1,6 +1,6 @@
 # Midow
 
-<img src="https://github.com/boscaa/midow/blob/screenshots/screenshots/midow.png"  width="100%" />
+<img src="https://raw.githubusercontent.com/booscaaa/midow/master/screenshots/midow.png"  width="100%" />
 
 
 ## About this Project
