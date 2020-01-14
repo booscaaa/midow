@@ -1,22 +1,21 @@
-import 'dart:async';
-import 'dart:ui';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/directions.dart' as ws;
+import 'package:midow/screen/establishment-details.dart';
 import 'package:background_fetch/background_fetch.dart';
+import 'package:google_maps_util/google_maps_util.dart';
+import 'package:midow/screen/establishment-crud.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:midow/model/establishment.dart';
+import 'package:midow/bloc/establishment.dart';
+import 'package:midow/api/establishment.dart';
+import 'package:midow/api/directions.dart';
+import 'package:location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_util/google_maps_util.dart';
-import 'package:google_maps_webservice/directions.dart' as ws;
-import 'package:location/location.dart';
-import 'package:midow/api/directions.dart';
-import 'package:midow/api/estabelecimento.dart';
-import 'package:midow/bloc/estabelecimento.dart';
 import 'dart:math' as math;
-
-import 'package:midow/model/estabelecimento.dart';
-import 'package:midow/screen/crud-estabelecimento.dart';
-import 'package:midow/screen/detalhes-estabelecimento.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'dart:async';
+import 'dart:ui';
 
 class MapsPage extends StatefulWidget {
   final GlobalKey<ScaffoldState> drawerKey;
@@ -28,7 +27,7 @@ class MapsPage extends StatefulWidget {
 }
 
 class MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
-  final bloc = BlocProvider.getBloc<EstabelecimentoBloc>();
+  final bloc = BlocProvider.getBloc<EstablishmentBloc>();
 
   Completer<GoogleMapController> _controller = Completer();
   AnimationController _controllerAnimation;
@@ -38,14 +37,14 @@ class MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   LatLng markerAdd;
   bool cadastrar = false;
   LocationData currentLocation;
-  EstabelecimentoAPI api = EstabelecimentoAPI();
+  EstablishmentAPI api = EstablishmentAPI();
   String _mapStyle;
 
   Location location = new Location();
 
   CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(0, 0),
-    zoom: 14.4746,
+    zoom: 12.4746,
   );
 
   @override
@@ -68,8 +67,8 @@ class MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     });
   }
 
-  _plotMaps(List<Estabelecimento> estabelecimentos) {
-    for (Estabelecimento e in estabelecimentos) {
+  _plotMaps(List<Establishment> estabelecimentos) {
+    for (Establishment e in estabelecimentos) {
       _add(e);
     }
   }
@@ -117,9 +116,11 @@ class MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             requiredNetworkType: BackgroundFetchConfig.NETWORK_TYPE_NONE),
         () async {
       print('[BackgroundFetch] Event received');
-      setState(() {
-        _events.insert(0, new DateTime.now());
-      });
+      if (this.mounted) {
+        setState(() {
+          _events.insert(0, new DateTime.now());
+        });
+      }
 
       BackgroundFetch.finish();
     }).then((int status) {
@@ -147,7 +148,7 @@ class MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     }
   }
 
-  _add(Estabelecimento e) async {
+  _add(Establishment e) async {
     final bitmapIcon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(), 'images/marker_point.png');
     final String markerIdVal = e.id.toString();
@@ -199,9 +200,11 @@ class MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               mapStyle: _mapStyle));
         });
 
-    setState(() {
-      markers[markerId] = marker;
-    });
+    if (this.mounted) {
+      setState(() {
+        markers[markerId] = marker;
+      });
+    }
   }
 
   @override
@@ -235,12 +238,16 @@ class MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 markers: Set<Marker>.of(markers.values),
                 onCameraMoveStarted: () {
                   this.cadastrar = true;
-                  setState(() {});
+                  if (this.mounted) {
+                    setState(() {});
+                  }
                 },
                 onCameraMove: (object) {
                   if (nova) {
                     markerAdd = object.target;
-                    setState(() {});
+                    if (this.mounted) {
+                      setState(() {});
+                    }
                   }
                 },
                 onMapCreated: (GoogleMapController controller) {
@@ -328,7 +335,9 @@ class MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                             this.nova = true;
                             this.cadastrar = false;
                             _controllerAnimation.reverse();
-                            setState(() {});
+                            if (this.mounted) {
+                              setState(() {});
+                            }
                             break;
 
                           default:
@@ -382,10 +391,11 @@ class MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                             onPressed: () {
                               this.nova = !this.nova;
                               this.cadastrar = false;
+                              if (this.mounted) {
+                                setState(() {});
+                              }
 
-                              setState(() {});
-
-                              Estabelecimento e = new Estabelecimento(
+                              Establishment e = new Establishment(
                                   latitude: markerAdd.latitude,
                                   longitude: markerAdd.longitude);
                               bloc.changeLoading(false);
@@ -406,7 +416,9 @@ class MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                         this.cadastrar = false;
                         this.nova = !this.nova;
                         this.markers = <MarkerId, Marker>{};
-                        setState(() {});
+                        if (this.mounted) {
+                          setState(() {});
+                        }
                       },
                     ),
                   ),

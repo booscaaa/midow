@@ -1,20 +1,20 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:midow/api/estabelecimento.dart';
-import 'package:midow/model/estabelecimento.dart';
-import 'package:midow/provider/favorito.dart';
+import 'package:midow/model/establishment.dart';
+import 'package:midow/provider/favorite.dart';
+import 'package:midow/api/establishment.dart';
 import 'package:rxdart/rxdart.dart';
 
-class FavoritoBloc extends BlocBase {
-  List<Estabelecimento> _estabelecimentos = new List();
-  EstabelecimentoAPI api = new EstabelecimentoAPI();
+class FavoritesBloc extends BlocBase {
+  List<Establishment> _estabelecimentos = new List();
+  EstablishmentAPI api = new EstablishmentAPI();
 
   final estabelecimentos = new BehaviorSubject<
-      List<Estabelecimento>>(); //the BehaviorSubject gets the last value
+      List<Establishment>>(); //the BehaviorSubject gets the last value
 
   bool loading = false;
   bool isClose = false;
 
-  FavoritoBloc() {
+  FavoritesBloc() {
     _getFavoritos();
   }
 
@@ -26,7 +26,7 @@ class FavoritoBloc extends BlocBase {
     fp.close();
   }
 
-  add(Estabelecimento e) async {
+  add(Establishment e) async {
     FavoritoProvider fp = new FavoritoProvider();
     await fp.open();
     await fp.insert(e);

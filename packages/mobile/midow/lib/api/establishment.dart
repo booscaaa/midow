@@ -1,8 +1,8 @@
+import 'package:midow/model/establishment.dart';
 import 'package:dio/dio.dart';
-import 'package:midow/model/estabelecimento.dart';
 
-class EstabelecimentoAPI {
-  Future<Estabelecimento> store(Estabelecimento e) async {
+class EstablishmentAPI {
+  Future<Establishment> store(Establishment e) async {
     Dio dio = new Dio();
     print(e.toJson());
     Response response = await dio.post(
@@ -11,12 +11,12 @@ class EstabelecimentoAPI {
         options:
             Options(headers: {Headers.contentTypeHeader: "application/json"}));
 
-            print(response.data);
+    print(response.data);
 
-    return Estabelecimento.fromJson(response.data);
+    return Establishment.fromJson(response.data);
   }
 
-  Future<List<Estabelecimento>> index() async {
+  Future<List<Establishment>> index() async {
     Dio dio = new Dio();
     Response response = await dio.get(
         "http://192.168.200.65:3333/estabelecimento",
@@ -25,9 +25,9 @@ class EstabelecimentoAPI {
 
     print(response.data);
 
-    return response.data.map<Estabelecimento>((est) {
+    return response.data.map<Establishment>((est) {
       print(est);
-      return Estabelecimento.fromJson(est);
+      return Establishment.fromJson(est);
     }).toList();
   }
 }

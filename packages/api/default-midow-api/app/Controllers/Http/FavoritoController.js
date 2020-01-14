@@ -7,6 +7,9 @@
 /**
  * Resourceful controller for interacting with favoritos
  */
+
+const Favorito = use("App/Models/Favorito")
+
 class FavoritoController {
   /**
    * Show a list of all favoritos.
@@ -41,6 +44,11 @@ class FavoritoController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+	// const data = request.only(['estabelecimento_id', 'latitude', 'longitude']);
+
+    // const estabelecimento = await Estabelecimento.create(data);
+
+    // return estabelecimento;
   }
 
   /**

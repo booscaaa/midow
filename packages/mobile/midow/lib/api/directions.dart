@@ -1,15 +1,12 @@
-import 'dart:io';
-
-import 'package:google_maps_flutter/google_maps_flutter.dart' as m;
 import 'package:google_maps_webservice/directions.dart';
+import 'package:midow/model/establishment.dart';
 import 'package:location/location.dart' as l;
-import 'package:midow/model/estabelecimento.dart';
 
 class DirectionsAPI {
-  Future<DirectionsResponse> getRoute(l.LocationData currentPosition, Estabelecimento e) async {
-    final directions = GoogleMapsDirections(
-        apiKey:
-            'AIzaSyCzGKtGFkSMGaiGpw7bFWvRWIwOM1vDgv0');
+  Future<DirectionsResponse> getRoute(
+      l.LocationData currentPosition, Establishment e) async {
+    final directions =
+        GoogleMapsDirections(apiKey: 'AIzaSyCzGKtGFkSMGaiGpw7bFWvRWIwOM1vDgv0');
     DirectionsResponse res = await directions.directionsWithLocation(
         Location(currentPosition.latitude, currentPosition.longitude),
         Location(e.latitude, e.longitude));

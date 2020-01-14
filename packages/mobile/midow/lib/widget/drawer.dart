@@ -1,5 +1,5 @@
+import 'package:midow/screen/favorites.dart';
 import 'package:flutter/material.dart';
-import 'package:midow/screen/favoritos.dart';
 
 class DrawerWidget extends StatefulWidget {
   @override
@@ -71,7 +71,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => FavoritosPage()),
+                                  builder: (context) => FavoritesPage()),
                             );
                           }
                           _selectedIndex = index;

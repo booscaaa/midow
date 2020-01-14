@@ -1,14 +1,14 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:midow/api/estabelecimento.dart';
-import 'package:midow/model/estabelecimento.dart';
+import 'package:midow/model/establishment.dart';
+import 'package:midow/api/establishment.dart';
 import 'package:rxdart/rxdart.dart';
 
-class EstabelecimentoBloc extends BlocBase {
-  List<Estabelecimento> _estabelecimentos = new List();
-  EstabelecimentoAPI api = new EstabelecimentoAPI();
+class EstablishmentBloc extends BlocBase {
+  List<Establishment> _estabelecimentos = new List();
+  EstablishmentAPI api = new EstablishmentAPI();
 
   final estabelecimentos = new BehaviorSubject<
-      List<Estabelecimento>>(); //the BehaviorSubject gets the last value
+      List<Establishment>>(); //the BehaviorSubject gets the last value
 
   bool loading = false;
   bool isClose = false;
@@ -23,17 +23,17 @@ class EstabelecimentoBloc extends BlocBase {
   }
 
   index() async {
-    List<Estabelecimento> est = await api.index();
+    List<Establishment> est = await api.index();
     this._estabelecimentos = est;
     estabelecimentos.sink.add(_estabelecimentos);
     // notifyListeners();
   }
 
-  store(Estabelecimento e) async {
+  store(Establishment e) async {
     changeLoading(true);
 
     try {
-      Estabelecimento estabelecimento = await api.store(e);
+      Establishment estabelecimento = await api.store(e);
       _estabelecimentos.add(estabelecimento);
 
       estabelecimentos.sink.add(_estabelecimentos);

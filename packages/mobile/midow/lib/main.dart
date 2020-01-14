@@ -1,10 +1,9 @@
 import 'package:background_fetch/background_fetch.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:flutter/material.dart';
-import 'package:midow/bloc/favorito.dart';
+import 'package:midow/bloc/favorites.dart';
 import 'package:midow/screen/home.dart';
-
-import 'bloc/estabelecimento.dart';
+import 'package:flutter/material.dart';
+import 'bloc/establishment.dart';
 
 void backgroundFetchHeadlessTask() async {
   print('[BackgroundFetch] Headless event received.');
@@ -24,8 +23,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       blocs: [
-        Bloc((i) => EstabelecimentoBloc()),
-        Bloc((i) => FavoritoBloc()),
+        Bloc((i) => EstablishmentBloc()),
+        Bloc((i) => FavoritesBloc()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

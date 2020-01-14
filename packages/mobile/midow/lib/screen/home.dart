@@ -1,23 +1,6 @@
-import 'dart:async';
-import 'dart:ui';
-import 'package:background_fetch/background_fetch.dart';
-import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_util/google_maps_util.dart';
-import 'package:google_maps_webservice/directions.dart' as ws;
-import 'package:location/location.dart';
-import 'package:midow/api/directions.dart';
-import 'package:midow/api/estabelecimento.dart';
-import 'package:midow/bloc/estabelecimento.dart';
-import 'dart:math' as math;
-
-import 'package:midow/model/estabelecimento.dart';
-import 'package:midow/screen/crud-estabelecimento.dart';
-import 'package:midow/screen/detalhes-estabelecimento.dart';
-import 'package:midow/screen/favoritos.dart';
+import 'package:midow/screen/favorites.dart';
 import 'package:midow/screen/maps.dart';
+import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -60,7 +43,7 @@ class HomePageState extends State<HomePage> {
       case 0:
         return new MapsPage(drawerKey: _drawerKey);
       case 1:
-        return new FavoritosPage(drawerKey: _drawerKey);
+        return new FavoritesPage(drawerKey: _drawerKey);
 
       default:
         return new Text("Error");

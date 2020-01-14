@@ -1,20 +1,20 @@
-import 'dart:ui';
+import 'package:midow/widget/favorite-cart.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:midow/bloc/favorites.dart';
 import 'package:flutter/material.dart';
-import 'package:midow/bloc/favorito.dart';
-import 'package:midow/widget/drawer.dart';
+import 'dart:ui';
 
-class FavoritosPage extends StatefulWidget {
+class FavoritesPage extends StatefulWidget {
   final GlobalKey<ScaffoldState> drawerKey;
 
-  FavoritosPage({this.drawerKey});
+  FavoritesPage({this.drawerKey});
   @override
-  State<FavoritosPage> createState() => FavoritosPageState();
+  State<FavoritesPage> createState() => FavoritesPageState();
 }
 
-class FavoritosPageState extends State<FavoritosPage>
+class FavoritesPageState extends State<FavoritesPage>
     with TickerProviderStateMixin {
-  final bloc = BlocProvider.getBloc<FavoritoBloc>();
+  final bloc = BlocProvider.getBloc<FavoritesBloc>();
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class FavoritosPageState extends State<FavoritosPage>
             return new ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext ctxt, int index) {
-                  return new Text(snapshot.data[index].nome);
+                  return FavoriteCardWidget(estabelecimento: snapshot.data[index]);
                 });
           } else {
             return Container();

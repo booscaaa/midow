@@ -1,13 +1,14 @@
-import 'package:midow/model/estabelecimento.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:midow/model/establishment.dart';
+import './database-helper.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:sqflite/sqflite.dart';
 
 class FavoritoProvider {
   Database db;
 
   Future open() async {
     var databasesPath = await getDatabasesPath();
-    db = await openDatabase(databasesPath + 'midow.db', version: 1,
+    db = await openDatabase(databasesPath + 'midow.db', version: VERSION,
         onCreate: (Database db, int version) async {
       await db.execute('''
         create table favoritos ( 
@@ -16,28 +17,30 @@ class FavoritoProvider {
           latitude number not null,
           longitude number not null)
         ''');
+    }, onUpgrade: (Database db, int version, int other) async {
+      //TODO
     });
   }
 
-  Future<Estabelecimento> insert(Estabelecimento estabelecimento) async {
+  Future<Establishment> insert(Establishment estabelecimento) async {
     await db.insert('favoritos', estabelecimento.toJson());
     return estabelecimento;
   }
 
-  Future<Estabelecimento> getEstabelecimento(int id) async {
+  Future<Establishment> getEstabelecimento(int id) async {
     List<Map> maps = await db.query('favoritos',
         columns: ['*'], where: 'id = ?', whereArgs: [id]);
     if (maps.length > 0) {
-      return Estabelecimento.fromJson(maps.first);
+      return Establishment.fromJson(maps.first);
     }
     return null;
   }
 
-  Future<List<Estabelecimento>> getEstabelecimentos() async {
+  Future<List<Establishment>> getEstabelecimentos() async {
     List<Map> maps = await db.query('favoritos', columns: ['*']);
 
-    List<Estabelecimento> estabelecimentos = maps.map<Estabelecimento>((est) {
-      return Estabelecimento.fromJson(est);
+    List<Establishment> estabelecimentos = maps.map<Establishment>((est) {
+      return Establishment.fromJson(est);
     }).toList();
 
     return estabelecimentos;
@@ -47,7 +50,7 @@ class FavoritoProvider {
     return await db.delete('favoritos', where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<int> update(Estabelecimento estabelecimento) async {
+  Future<int> update(Establishment estabelecimento) async {
     return await db.update('favoritos', estabelecimento.toJson(),
         where: 'id = ?', whereArgs: [estabelecimento.id]);
   }

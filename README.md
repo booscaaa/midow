@@ -33,7 +33,8 @@ It's free!
 
 - Establishments
 	- Create, edit and remove the establishments you have registered
-	- Report incorrect information from other users anonymously.
+	- Save the favorites you prefer.
+	- Calculate the route and time to the establishments
 
 <br>
 

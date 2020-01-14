@@ -1,26 +1,26 @@
-class Estabelecimento {
+class Establishment {
   double latitude;
   double longitude;
-  String nome;
+  String name;
   DateTime createdAt;
   DateTime updatedAt;
   int id;
 
-  Estabelecimento({
+  Establishment({
     this.latitude,
     this.longitude,
-    this.nome,
+    this.name,
     this.createdAt,
     this.updatedAt,
     this.id,
   });
 
-  factory Estabelecimento.fromJson(Map<String, dynamic> json) =>
-      Estabelecimento(
+  factory Establishment.fromJson(Map<String, dynamic> json) =>
+      Establishment(
         latitude: json["latitude"] == null ? null : json["latitude"].toDouble(),
         longitude:
             json["longitude"] == null ? null : json["longitude"].toDouble(),
-        nome: json["nome"] == null ? null : json["nome"],
+        name: json["nome"] == null ? null : json["nome"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -33,7 +33,7 @@ class Estabelecimento {
   Map<String, dynamic> toJson() => {
         "latitude": this.latitude,
         "longitude": this.longitude,
-        "nome": this.nome,
+        "nome": this.name,
         "id": this.id != null ? this.id : 0
       };
 }

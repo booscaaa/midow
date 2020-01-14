@@ -1,21 +1,20 @@
-import 'dart:async';
-
-import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/directions.dart' as ws;
+import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:midow/model/establishment.dart';
+import 'package:midow/bloc/establishment.dart';
+import 'package:midow/bloc/favorites.dart';
 import 'package:location/location.dart';
-import 'package:midow/bloc/estabelecimento.dart';
-import 'package:midow/bloc/favorito.dart';
-import 'package:midow/model/estabelecimento.dart';
+import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:math';
 
 class EstabelecimentoDetalhesPage extends ModalRoute<void> {
   Completer<GoogleMapController> _controller = Completer();
-  final bloc = BlocProvider.getBloc<EstabelecimentoBloc>();
-  final favoritos = BlocProvider.getBloc<FavoritoBloc>();
+  final bloc = BlocProvider.getBloc<EstablishmentBloc>();
+  final favoritos = BlocProvider.getBloc<FavoritesBloc>();
   final ws.DirectionsResponse direction;
-  final Estabelecimento estabelecimento;
+  final Establishment estabelecimento;
   final Map<MarkerId, Marker> marker;
   final LocationData currentLocation;
   final Set<Polyline> polilyne;
@@ -86,7 +85,7 @@ class EstabelecimentoDetalhesPage extends ModalRoute<void> {
                                 appBar: AppBar(
                                   backgroundColor: Colors.transparent,
                                   elevation: 0,
-                                  title: Text(estabelecimento.nome),
+                                  title: Text(estabelecimento.name),
                                   iconTheme: IconThemeData(
                                       color: Theme.of(context).primaryColor),
                                   actions: <Widget>[
@@ -119,7 +118,8 @@ class EstabelecimentoDetalhesPage extends ModalRoute<void> {
                                                 child: GoogleMap(
                                                   zoomGesturesEnabled: true,
                                                   myLocationEnabled: true,
-                                                  myLocationButtonEnabled: false,
+                                                  myLocationButtonEnabled:
+                                                      false,
                                                   mapType: MapType.normal,
                                                   initialCameraPosition:
                                                       _kGooglePlex,

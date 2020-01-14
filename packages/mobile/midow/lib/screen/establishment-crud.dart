@@ -1,10 +1,10 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:midow/model/establishment.dart';
+import 'package:midow/bloc/establishment.dart';
 import 'package:flutter/material.dart';
-import 'package:midow/bloc/estabelecimento.dart';
-import 'package:midow/model/estabelecimento.dart';
 
 class EstabelecimentoCrudPage extends ModalRoute<void> {
-  final Estabelecimento estabelecimento;
+  final Establishment estabelecimento;
   EstabelecimentoCrudPage({this.estabelecimento});
 
   @override
@@ -25,7 +25,7 @@ class EstabelecimentoCrudPage extends ModalRoute<void> {
   @override
   bool get maintainState => true;
 
-  final bloc = BlocProvider.getBloc<EstabelecimentoBloc>();
+  final bloc = BlocProvider.getBloc<EstablishmentBloc>();
 
   final nomeController = TextEditingController();
 
@@ -67,9 +67,9 @@ class EstabelecimentoCrudPage extends ModalRoute<void> {
                                 ),
                                 body: Container(
                                   padding: EdgeInsets.all(20),
-                                  child: Consumer<EstabelecimentoBloc>(builder:
+                                  child: Consumer<EstablishmentBloc>(builder:
                                       (BuildContext context,
-                                          EstabelecimentoBloc bloc) {
+                                          EstablishmentBloc bloc) {
                                     if (bloc.loading) {
                                       return Center(
                                           child: CircularProgressIndicator());
@@ -112,7 +112,7 @@ class EstabelecimentoCrudPage extends ModalRoute<void> {
                                                     textColor: Theme.of(context)
                                                         .primaryColor,
                                                     onPressed: () {
-                                                      estabelecimento.nome =
+                                                      estabelecimento.name =
                                                           nomeController.text;
                                                       bloc.store(
                                                           estabelecimento);
