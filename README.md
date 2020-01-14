@@ -17,7 +17,7 @@ This project is part of my personal portfolio, so, I'll be happy if you could pr
 
 Email-me: boscardinvinicius@gmail.com
 
-Connect with me at [LinkedIn](https://www.linkedin.com/in/boscardinvinicius/).
+Connect with me at [LinkedIn](https://www.linkedin.com/in/booscaaa/).
 
 Also, you can use this Project as you wish, be for study, be for make improvements or earn money with it!
 
@@ -203,10 +203,10 @@ You can send how many PR's do you want, I'll be glad to analyse and accept them!
 
 Email-me: boscardinvinicius@gmail.com
 
-Connect with me at [LinkedIn](https://www.linkedin.com/in/boscardinvinicius/)
+Connect with me at [LinkedIn](https://www.linkedin.com/in/booscaaa/)
 
 Thank you!
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/boscaa/midow/blob/master/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/booscaaa/midow/blob/master/LICENSE) file for details
